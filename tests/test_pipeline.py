@@ -29,7 +29,10 @@ class PipelineTests(unittest.TestCase):
         os.chdir(self.root)
         p.write(p.STATE, {'last_published_at': None, 'pending': None, 'attempts': [], 'published': [], 'source_ids': []})
         self.item = p.read('automation/catalog.json')[0]
+        # Keep tests stable after real production candidates have been published.
+        self.item['filename'] = 'garage-test-fixture.html'
         self.item['word_count'] = str(p.words(self.item))+' words'
+        p.write('automation/catalog.json', [self.item])
 
     def tearDown(self):
         os.chdir(self.cwd)
@@ -143,7 +146,7 @@ class PipelineTests(unittest.TestCase):
         self.assertIsNone(p.read(p.STATE)['last_published_at'])
 
     def test_catalog_voice(self):
-        for item in p.read('automation/catalog.json'):
+        for item in p.read(ROOT/'automation/catalog.json'):
             p.validate(item)
 
     def test_source_refill_and_dedup(self):
