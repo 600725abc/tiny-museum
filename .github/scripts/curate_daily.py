@@ -324,6 +324,30 @@ def run(target_room=None):
             f.write(dash_content)
 
     print(f"Successfully added {selected['title']} and updated all pages.")
+
+    # 8. Automatically commit and push to trigger GitHub Pages live update
+    auto_push = os.environ.get("AUTO_PUSH", "true").lower() in ("true", "1", "yes")
+    if auto_push:
+        try:
+            import subprocess
+            subprocess.run(["git", "add", "."], check=True)
+            commit_res = subprocess.run(
+                ["git", "commit", "-m", f"Auto-curate: Add {selected['title']} [skip ci]"],
+                capture_output=True,
+                text=True
+            )
+            if commit_res.returncode == 0:
+                print("Committed exhibit changes to Git.")
+                push_res = subprocess.run(["git", "push", "origin", "main"], capture_output=True, text=True)
+                if push_res.returncode == 0:
+                    print("Pushed to remote repository. GitHub Pages will build and deploy online automatically.")
+                else:
+                    print(f"Git push notice: {push_res.stderr.strip()}")
+            else:
+                print("No Git commit required (working tree clean).")
+        except Exception as e:
+            print(f"Notice: Git sync encountered: {e}")
+
     return True
 
 if __name__ == "__main__":
