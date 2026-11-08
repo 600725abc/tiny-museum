@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import datetime
 
 POOL = [
@@ -15,7 +16,7 @@ POOL = [
         "label": "<strong>Brass Spirit Torpedo Level</strong>. Acquired 1962. Machined from solid brass and fitted with glowing vials, it registers true horizontal balance. Its floating green bubble speaks silent judgment to unsteady surfaces.",
         "fun_fact": "Melchisedech Thevenot invented the spirit level around 1661.",
         "card_preview": "Machined from solid brass with glowing vials, registering true horizontal balance with silent mechanical authority.",
-        "word_count": "33 字"
+        "word_count": "37 字"
     },
     {
         "filename": "kitchen-bottle-opener.html",
@@ -26,10 +27,10 @@ POOL = [
         "title_zh": "鑄鐵開瓶器",
         "year": "1959",
         "catalog": "Kitchen Collection &bull; Catalog No. K-06",
-        "label": "<strong>Cast Iron Bottle Opener</strong>. Acquired 1959. Molded in unpolished iron, it levers crown caps with crisp, metallic satisfaction. Decades of evening gatherings have burnished its grip to satin perfection.",
-        "fun_fact": "William Painter invented both the crown bottle cap and opener in 1892.",
+        "label": "<strong>Cast Iron Bottle Opener</strong>. Acquired 1959. Molded in unpolished iron, it levers crown caps with crisp satisfaction. Decades of gatherings have burnished its grip to satin perfection.",
+        "fun_fact": "William Painter invented the crown cap and opener in 1892.",
         "card_preview": "Molded in unpolished iron, levering crown caps with crisp satisfaction across decades of celebratory gatherings.",
-        "word_count": "33 字"
+        "word_count": "37 字"
     },
     {
         "filename": "garage-iron-c-clamp.html",
@@ -63,13 +64,16 @@ POOL = [
 
 def generate_exhibit_image(title, prompt_desc, filename, room=""):
     """Call OpenAI API using gpt-image-2.6-flare to generate high-end domestic setting artwork."""
+    os.makedirs("images", exist_ok=True)
+    img_filename = f"images/{filename.replace('.html', '.jpg')}"
+    if os.path.exists(img_filename):
+        print(f"Using existing exhibit image: {img_filename}")
+        return img_filename
+
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
         print("OPENAI_API_KEY not configured. Skipping automated image generation.")
         return None
-
-    os.makedirs("images", exist_ok=True)
-    img_filename = f"images/{filename.replace('.html', '.jpg')}"
     
     endpoint = "https://api.openai.com/v1/images/generations"
     headers = {
@@ -125,12 +129,21 @@ def generate_exhibit_image(title, prompt_desc, filename, room=""):
         print(f"Notice: Image generation with {model_name} encountered: {e}")
         return None
 
-def run():
+def run(target_room=None):
     now_str = datetime.datetime.now().strftime("%Y-%m-%d")
     
+    if not target_room and len(sys.argv) > 1:
+        for arg in sys.argv[1:]:
+            if arg.startswith("--room="):
+                target_room = arg.split("=", 1)[1]
+            elif not arg.startswith("-"):
+                target_room = arg
+
     # 1. Pick first object not yet in repo
     selected = None
     for item in POOL:
+        if target_room and item["room"].lower() != target_room.lower():
+            continue
         if not os.path.exists(item["filename"]):
             selected = item
             break
@@ -141,8 +154,8 @@ def run():
 
     print(f"Adding new exhibit: {selected['title']}")
 
-    # 2. Generate Image with GPT Image 2.6 (if API key is present)
-    image_path = generate_exhibit_image(selected['title'], selected['card_preview'], selected['filename'])
+    # 2. Generate Image with GPT Image 2.6 (if API key is present or local file exists)
+    image_path = generate_exhibit_image(selected['title'], selected['card_preview'], selected['filename'], selected['room'])
     image_tag = f"""\n        <div class="exhibit-image">\n          <img src="{image_path}" alt="{selected['title']}">\n        </div>""" if image_path else ""
 
     # 3. Create the exhibit HTML file
@@ -291,6 +304,22 @@ def run():
             flags=re.DOTALL
         )
 
+        # Update dynamic stats count
+        total_exhibits = len([f for f in os.listdir(".") if f.endswith(".html") and "-" in f and not f.endswith(".bak")])
+        kitchen_count = len([f for f in os.listdir(".") if f.startswith("kitchen-") and f.endswith(".html")])
+        desk_count = len([f for f in os.listdir(".") if f.startswith("desk-") and f.endswith(".html")])
+        garage_count = len([f for f in os.listdir(".") if f.startswith("garage-") and f.endswith(".html")])
+        dash_content = re.sub(
+            r'<div class="stat-number">\d+</div>\s*<div class="stat-label">現有展品總數</div>',
+            f'<div class="stat-number">{total_exhibits}</div>\n        <div class="stat-label">現有展品總數</div>',
+            dash_content
+        )
+        dash_content = re.sub(
+            r'<div class="stat-number">\d+ / \d+ / \d+</div>\s*<div class="stat-label">廚房 / 書桌 / 車庫</div>',
+            f'<div class="stat-number">{kitchen_count} / {desk_count} / {garage_count}</div>\n        <div class="stat-label">廚房 / 書桌 / 車庫</div>',
+            dash_content
+        )
+
         with open("dashboard.html", "w", encoding="utf-8") as f:
             f.write(dash_content)
 
@@ -299,3 +328,4 @@ def run():
 
 if __name__ == "__main__":
     run()
+
