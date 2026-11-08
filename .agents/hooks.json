@@ -1,0 +1,15 @@
+{
+  "protect-rooms-delete": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python check_rooms_delete.py"
+          }
+        ]
+      }
+    ]
+  }
+}

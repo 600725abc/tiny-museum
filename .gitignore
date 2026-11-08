@@ -1,0 +1,8 @@
+# Ignore backups and temp files
+*.bak
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Ignore heavy video production artifacts
+hyperagent/

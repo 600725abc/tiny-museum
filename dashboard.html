@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>館藏管理儀表板 — Tiny Museum</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .stat-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-light);
+      padding: 1.5rem;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 2.2rem;
+      font-family: var(--font-serif);
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 0.25rem;
+    }
+    .catalog-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface-color);
+      border: 1px solid var(--border-light);
+      margin-top: 1rem;
+    }
+    .catalog-table th, .catalog-table td {
+      padding: 1rem 1.25rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 0.95rem;
+    }
+    .catalog-table th {
+      background-color: #faf9f6;
+      font-family: var(--font-serif);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .catalog-table tr:hover {
+      background-color: #fdfcf9;
+    }
+    .room-tag {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background-color: #efebe4;
+      color: var(--text-secondary);
+    }
+    .quick-open-btn {
+      color: var(--accent-gold);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .quick-open-btn:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="site-title">Tiny Museum of Everyday Objects</a>
+    <p class="tagline">館藏即時儀表板 — 自動化新增展品與現存展件一覽</p>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="kitchen.html">Kitchen</a>
+      <a href="desk.html">Desk</a>
+      <a href="garage.html">Garage</a>
+      <a href="dashboard.html" class="active">儀表板</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="room-intro">
+      <h1 class="room-title">館藏監控儀表板</h1>
+      <p style="color: var(--text-secondary); font-size: 0.95rem;">毋需翻找資料夾檔案，此頁即時彙整全館最新展品狀況與直達連結。</p>
+      <div class="divider" style="margin-top: 1rem;"></div>
+    </div>
+
+    <!-- 統計卡片 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">15</div>
+        <div class="stat-label">現有展品總數</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">3</div>
+        <div class="stat-label">展廳數量</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">5 / 5 / 5</div>
+        <div class="stat-label">廚房 / 書桌 / 車庫</div>
+      </div>
+    </div>
+
+    <!-- 最近新增展品提示 -->
+    <div class="museum-plaque" style="padding: 1.75rem 2rem; margin-bottom: 2.5rem; border-left: 4px solid var(--accent-gold);">
+      <span class="plaque-year">最新自動入庫項目</span>
+      <h3 style="font-family: var(--font-serif); font-size: 1.4rem; margin: 0.35rem 0;">Forged Claw Hammer（鍛造羊角錘）</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.75rem;">展廳：車庫 (Garage) &bull; 收購年份：1966 &bull; 字數：34 字</p>
+      <a href="garage-claw-hammer.html" class="card-action">點此直接查看展品頁面 &rarr;</a>
+    </div>
+
+    <!-- 全館展品快速清單 -->
+    <h2 style="font-family: var(--font-serif); font-size: 1.4rem; margin-bottom: 0.75rem;">完整館藏直達清單</h2>
+    <table class="catalog-table">
+      <thead>
+        <tr>
+          <th>展廳</th>
+          <th>展品名稱</th>
+          <th>收購年份</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="room-tag">車庫 Garage</span></td>
+          <td><strong>Forged Claw Hammer</strong></td>
+          <td>1966</td>
+          <td><a href="garage-claw-hammer.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">車庫 Garage</span></td>
+          <td>Cast Steel Bench Vise</td>
+          <td>1958</td>
+          <td><a href="garage-bench-vise.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">車庫 Garage</span></td>
+          <td>Steel Tape Measure</td>
+          <td>1981</td>
+          <td><a href="garage-steel-tape-measure.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">車庫 Garage</span></td>
+          <td>Thumb-Pump Oil Can</td>
+          <td>1963</td>
+          <td><a href="garage-vintage-oil-can.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">車庫 Garage</span></td>
+          <td>Adjustable Crescent Wrench</td>
+          <td>1974</td>
+          <td><a href="garage-adjustable-wrench.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">廚房 Kitchen</span></td>
+          <td>Granite Mortar and Pestle</td>
+          <td>1971</td>
+          <td><a href="kitchen-mortar-and-pestle.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">廚房 Kitchen</span></td>
+          <td>Balloon Wire Whisk</td>
+          <td>1965</td>
+          <td><a href="kitchen-whisk.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">廚房 Kitchen</span></td>
+          <td>French Rolling Pin</td>
+          <td>1984</td>
+          <td><a href="kitchen-wooden-rolling-pin.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">廚房 Kitchen</span></td>
+          <td>Cast Iron Skillet</td>
+          <td>1952</td>
+          <td><a href="kitchen-cast-iron-skillet.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">廚房 Kitchen</span></td>
+          <td>Classic Moka Pot</td>
+          <td>1978</td>
+          <td><a href="kitchen-moka-pot.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">書桌 Desk</span></td>
+          <td>Brass Paperclip</td>
+          <td>1961</td>
+          <td><a href="desk-brass-paperclip.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">書桌 Desk</span></td>
+          <td>Three-Minute Sand Timer</td>
+          <td>1991</td>
+          <td><a href="desk-sand-timer.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">書桌 Desk</span></td>
+          <td>Vintage Metal & Wood Stapler</td>
+          <td>1968</td>
+          <td><a href="desk-wooden-stapler.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">書桌 Desk</span></td>
+          <td>Glass Paperweight</td>
+          <td>1982</td>
+          <td><a href="desk-glass-paperweight.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+        <tr>
+          <td><span class="room-tag">書桌 Desk</span></td>
+          <td>Brass Fountain Pen</td>
+          <td>1974</td>
+          <td><a href="desk-fountain-pen.html" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+
+  <footer>
+    <p>Tiny Museum of Everyday Objects &copy; 2026 &bull; <a href="index.html" style="color: inherit;">返回首頁</a></p>
+  </footer>
+</body>
+</html>
