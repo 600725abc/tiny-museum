@@ -4,6 +4,7 @@
 
 | 日期 | 展件名稱 | 所屬展廳 | 獲取年份 | 展籤字數 | 觸發來源 / 狀態 | 線上連結 |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
+| **2026-11-08** | **Wooden Folding Ruler（木製摺疊尺）** | Desk（書桌） | 1970 | 34 字 | 雲端定時自動新增 ⭐ | [查看展品](desk-wooden-ruler.html) |
 | **2026-11-08** | **Forged Claw Hammer（鍛造羊角錘）** | Garage（車庫） | 1966 | 34 字 | 初始雲端上線測試 ⭐ | [查看展品](garage-claw-hammer.html) |
 | 2026-11-01 | Granite Mortar and Pestle（花崗岩研缽與研磨棒） | Kitchen（廚房） | 1971 | 35 字 | 既有館藏典藏 | [查看展品](kitchen-mortar-and-pestle.html) |
 | 2026-11-01 | Brass Paperclip（黃銅迴紋針） | Desk（書桌） | 1961 | 34 字 | 既有館藏典藏 | [查看展品](desk-brass-paperclip.html) |
