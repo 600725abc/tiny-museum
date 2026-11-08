@@ -28,6 +28,9 @@ class PipelineTests(unittest.TestCase):
         shutil.copytree(ROOT/'automation', self.root/'automation')
         os.chdir(self.root)
         p.write(p.STATE, {'last_published_at': None, 'pending': None, 'attempts': [], 'published': [], 'source_ids': []})
+        test_budget = p.read('automation/budget.json')
+        test_budget['approved'] = False
+        p.write('automation/budget.json', test_budget)
         self.item = p.read('automation/catalog.json')[0]
         # Keep tests stable after real production candidates have been published.
         self.item['filename'] = 'garage-test-fixture.html'

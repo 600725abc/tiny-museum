@@ -1,6 +1,6 @@
 {
-  "approved": false,
+  "approved": true,
   "reserve_per_request_usd": 0.25,
-  "monthly_budget_usd": 3.0,
-  "max_requests_per_month": 12
+  "monthly_budget_usd": 0.25,
+  "max_requests_per_month": 1
 }
