@@ -92,6 +92,10 @@ def run():
     print(f"Adding new exhibit: {selected['title']}")
 
     # 2. Create the exhibit HTML file
+    kitchen_active = ' class="active"' if selected['room'] == 'kitchen' else ''
+    desk_active = ' class="active"' if selected['room'] == 'desk' else ''
+    garage_active = ' class="active"' if selected['room'] == 'garage' else ''
+
     exhibit_html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,9 +110,9 @@ def run():
     <p class="tagline">Welcome to a quiet celebration of the simple tools and artifacts that quietly shape our days.</p>
     <nav>
       <a href="index.html">Home</a>
-      <a href="kitchen.html"{" class=\"active\"" if selected['room'] == 'kitchen' else ""}>Kitchen</a>
-      <a href="desk.html"{" class=\"active\"" if selected['room'] == 'desk' else ""}>Desk</a>
-      <a href="garage.html"{" class=\"active\"" if selected['room'] == 'garage' else ""}>Garage</a>
+      <a href="kitchen.html"{kitchen_active}>Kitchen</a>
+      <a href="desk.html"{desk_active}>Desk</a>
+      <a href="garage.html"{garage_active}>Garage</a>
     </nav>
   </header>
 
