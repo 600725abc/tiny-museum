@@ -3,131 +3,17 @@ import re
 import sys
 import datetime
 
-POOL = [
-    {
-        "filename": "garage-torpedo-level.html",
-        "room": "garage",
-        "room_name": "Garage",
-        "room_title_zh": "車庫",
-        "title": "Brass Spirit Torpedo Level",
-        "title_zh": "黃銅水準尺",
-        "year": "1962",
-        "catalog": "The Garage Room &bull; Catalog No. G-06",
-        "label": "<strong>Brass Spirit Torpedo Level</strong>. Acquired 1962. Machined from solid brass and fitted with glowing vials, it registers true horizontal balance. Its floating green bubble speaks silent judgment to unsteady surfaces.",
-        "fun_fact": "Melchisedech Thevenot invented the spirit level around 1661.",
-        "card_preview": "Machined from solid brass with glowing vials, registering true horizontal balance with silent mechanical authority.",
-        "word_count": "37 字"
-    },
-    {
-        "filename": "kitchen-bottle-opener.html",
-        "room": "kitchen",
-        "room_name": "Kitchen",
-        "room_title_zh": "廚房",
-        "title": "Cast Iron Bottle Opener",
-        "title_zh": "鑄鐵開瓶器",
-        "year": "1959",
-        "catalog": "Kitchen Collection &bull; Catalog No. K-06",
-        "label": "<strong>Cast Iron Bottle Opener</strong>. Acquired 1959. Molded in unpolished iron, it levers crown caps with crisp satisfaction. Decades of gatherings have burnished its grip to satin perfection.",
-        "fun_fact": "William Painter invented the crown cap and opener in 1892.",
-        "card_preview": "Molded in unpolished iron, levering crown caps with crisp satisfaction across decades of celebratory gatherings.",
-        "word_count": "37 字"
-    },
-    {
-        "filename": "garage-iron-c-clamp.html",
-        "room": "garage",
-        "room_name": "Garage",
-        "room_title_zh": "車庫",
-        "title": "Heavy Iron C-Clamp",
-        "title_zh": "重型鑄鐵C型夾",
-        "year": "1955",
-        "catalog": "The Garage Room &bull; Catalog No. G-07",
-        "label": "<strong>Heavy Iron C-Clamp</strong>. Acquired 1955. Cast in ductile iron with an Acme threaded screw, it holds glued timber with unswerving vigilance. Its swivel pad distributes tons of pressure without marring wood.",
-        "fun_fact": "The Acme thread profile was formulated in 1894 for heavy load clamping.",
-        "card_preview": "Cast in ductile iron with an Acme threaded screw, holding glued timber with unswerving mechanical vigilance.",
-        "word_count": "34 字"
-    },
-    {
-        "filename": "desk-rotary-pencil-sharpener.html",
-        "room": "desk",
-        "room_name": "Desk",
-        "room_title_zh": "書桌",
-        "title": "Mechanical Rotary Pencil Sharpener",
-        "title_zh": "旋轉手搖削鉛筆機",
-        "year": "1976",
-        "catalog": "Desk Collection &bull; Room 02",
-        "label": "<strong>Mechanical Rotary Pencil Sharpener</strong>. Acquired 1976. Twin cylindrical milling cutters shave cedar spirals into a clear receptacle with rhythmic grind. It restores precision points with disciplined mechanical efficiency.",
-        "fun_fact": "The planetary gear rotary sharpener was patented in 1896 by A.B. Dick.",
-        "card_preview": "Twin cylindrical milling cutters shave cedar spirals with rhythmic grind, restoring precision points with disciplined efficiency.",
-        "word_count": "34 字"
-    }
-]
+import json
+from pathlib import Path
+POOL = json.loads(Path('automation/catalog.json').read_text(encoding='utf-8'))
 
 def generate_exhibit_image(title, prompt_desc, filename, room=""):
-    """Call OpenAI API using gpt-image-2.6-flare to generate high-end domestic setting artwork."""
-    os.makedirs("images", exist_ok=True)
-    img_filename = f"images/{filename.replace('.html', '.jpg')}"
-    if os.path.exists(img_filename):
-        print(f"Using existing exhibit image: {img_filename}")
-        return img_filename
-
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
-        print("OPENAI_API_KEY not configured. Skipping automated image generation.")
-        return None
-    
-    endpoint = "https://api.openai.com/v1/images/generations"
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-    
-    # Designated model: gpt-image-2.6-flare
-    model_name = os.environ.get("OPENAI_IMAGE_MODEL", "gpt-image-2.6-flare")
-    
-    furniture_context = {
-        "kitchen": "a warm solid butcher block kitchen island or honed soapstone counter",
-        "desk": "a handsome dark oiled walnut study desk with book spines and quiet stationery",
-        "garage": "a scarred but cherished solid maple carpenter workbench in a sunlit home workshop"
-    }.get(room.lower(), "sophisticated, textured solid hardwood home furniture")
-
-    prompt = (
-        f"An editorial still-life photograph of {title}, an everyday household object celebrated for its sculptural quality and honest utility. "
-        f"{prompt_desc}. "
-        f"Setting: Intimate, high-end residential home environment—naturally placed on {furniture_context}. "
-        f"Strictly not an art gallery, no museum plinths, no sterile pedestals. "
-        f"Atmosphere: Rich, tasteful home interior with tactile domestic textures, warm natural daylight streaming through a nearby residential window, "
-        f"subtle soft morning illumination highlighting the patina of daily life. Architectural Digest domestic aesthetic."
-    )
-    
-    payload = {
-        "model": model_name,
-        "prompt": prompt,
-        "n": 1,
-        "size": "1024x1024"
-    }
-
-    try:
-        import urllib.request
-        import json
-        
-        req = urllib.request.Request(
-            endpoint,
-            data=json.dumps(payload).encode("utf-8"),
-            headers=headers,
-            method="POST"
-        )
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-            img_url = data["data"][0]["url"]
-            
-            with urllib.request.urlopen(img_url, timeout=30) as img_resp:
-                with open(img_filename, "wb") as f_img:
-                    f_img.write(img_resp.read())
-            print(f"Successfully generated exhibit image via {model_name}: {img_filename}")
-            return img_filename
-    except Exception as e:
-        print(f"Notice: Image generation with {model_name} encountered: {e}")
-        return None
+    from pathlib import Path
+    from PIL import Image
+    path = Path("images") / filename.replace(".html", ".jpg")
+    with Image.open(path) as image:
+        image.verify()
+    return path.as_posix()
 
 def run(target_room=None):
     now_str = datetime.datetime.now().strftime("%Y-%m-%d")
@@ -152,12 +38,20 @@ def run(target_room=None):
         print("All pool exhibits have already been added.")
         return False
 
+    selected = dict(selected)
+    import html
+    selected["title"] = html.escape(selected["title"], quote=True)
+    selected["card_preview"] = html.escape(selected["card_preview"], quote=True)
+
     print(f"Adding new exhibit: {selected['title']}")
 
     # 2. Generate Image with GPT Image 2.6 (if API key is present or local file exists)
     image_path = generate_exhibit_image(selected['title'], selected['card_preview'], selected['filename'], selected['room'])
     image_tag = f"""\n        <div class="exhibit-image">\n          <img src="{image_path}" alt="{selected['title']}">\n        </div>""" if image_path else ""
 
+    source = selected.get("source", "Tiny Museum fictional collection")
+    import html
+    source_note = '<p class="source-note">AI-generated illustration. Acquired refers to the digital collection. Source: ' + html.escape(source) + '</p>'
     # 3. Create the exhibit HTML file
     kitchen_active = ' class="active"' if selected['room'] == 'kitchen' else ''
     desk_active = ' class="active"' if selected['room'] == 'desk' else ''
@@ -200,6 +94,7 @@ def run(target_room=None):
           <div class="fun-fact-title">Curator's Note &bull; Fun Fact</div>
           <p class="fun-fact-text">{selected['fun_fact']}</p>
         </div>
+        {source_note}
       </article>
 
       <a href="{selected['room']}.html" class="back-link">&larr; Back to {selected['room_name']}</a>
@@ -229,6 +124,8 @@ def run(target_room=None):
       </a>\n\n"""
 
         marker = '<div class="gallery-grid">\n'
+        if room_content.count(marker) != 1:
+            raise ValueError("Room marker missing or duplicated")
         if marker in room_content:
             room_content = room_content.replace(marker, marker + card_snippet, 1)
         with open(room_file, "w", encoding="utf-8") as f:
@@ -257,19 +154,25 @@ def run(target_room=None):
         <div style="margin-top: 1.5rem; text-align: right;">
           <a href="{selected['filename']}" class="card-action">View Full Exhibit &rarr;</a>
         </div>
+        {source_note}
       </article>"""
 
-        index_content = re.sub(
+        index_content, count = re.subn(
             r'<article class="museum-plaque" style="margin-bottom: 1rem;">.*?</article>',
             new_plaque,
             index_content,
             flags=re.DOTALL
         )
+        if count != 1:
+            raise ValueError("Homepage marker missing or duplicated")
+        index_content = re.sub(r'Daily Feature &bull; .*?今日入庫展品', f'Latest Addition &bull; {now_str}', index_content)
+        index_content = index_content.replace('Objects of the Day', 'Featured Objects')
         with open("index.html", "w", encoding="utf-8") as f:
             f.write(index_content)
 
+    # History is written only by the verified deployment finalizer.
     # 6. Append to HISTORY.md (newest at top)
-    if os.path.exists("HISTORY.md"):
+    if False:
         with open("HISTORY.md", "r", encoding="utf-8") as f:
             hist_content = f.read()
 
@@ -294,6 +197,8 @@ def run(target_room=None):
         </tr>\n"""
 
         marker = "<tbody>\n"
+        if dash_content.count(marker) != 1:
+            raise ValueError("Dashboard marker missing or duplicated")
         if marker in dash_content:
             dash_content = dash_content.replace(marker, marker + new_row, 1)
 
@@ -325,31 +230,5 @@ def run(target_room=None):
 
     print(f"Successfully added {selected['title']} and updated all pages.")
 
-    # 8. Automatically commit and push to trigger GitHub Pages live update
-    auto_push = os.environ.get("AUTO_PUSH", "true").lower() in ("true", "1", "yes")
-    if auto_push:
-        try:
-            import subprocess
-            subprocess.run(["git", "add", "."], check=True)
-            commit_res = subprocess.run(
-                ["git", "commit", "-m", f"Auto-curate: Add {selected['title']} [skip ci]"],
-                capture_output=True,
-                text=True
-            )
-            if commit_res.returncode == 0:
-                print("Committed exhibit changes to Git.")
-                push_res = subprocess.run(["git", "push", "origin", "main"], capture_output=True, text=True)
-                if push_res.returncode == 0:
-                    print("Pushed to remote repository. GitHub Pages will build and deploy online automatically.")
-                else:
-                    print(f"Git push notice: {push_res.stderr.strip()}")
-            else:
-                print("No Git commit required (working tree clean).")
-        except Exception as e:
-            print(f"Notice: Git sync encountered: {e}")
-
     return True
-
-if __name__ == "__main__":
-    run()
 

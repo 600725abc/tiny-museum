@@ -8,3 +8,5 @@ __pycache__/
 
 # Ignore heavy video production artifacts
 hyperagent/
+
+_site/

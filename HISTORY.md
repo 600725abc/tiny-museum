@@ -1,11 +1,11 @@
 # Tiny Museum — 展品自動化更新歷史紀錄表
 
-此表格記錄 Tiny Museum 每日雲端自動化新增的展品紀錄。當 GitHub Actions 於每日早上執行時，會自動在下方追加新的展件紀錄與驗證狀態。
+此表保留既有館藏紀錄。2026-11-08 修復後，新增紀錄只在部署且逐檔線上驗證通過後追加；依成功發布的台北日期加三天，再新增下一件。舊紀錄的「定時自動新增」並無排程全流程證據，已改標為既有新增紀錄。
 
 | 日期 | 展件名稱 | 所屬展廳 | 獲取年份 | 展籤字數 | 觸發來源 / 狀態 | 線上連結 |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **2026-11-08** | **Cast Iron Bottle Opener（鑄鐵開瓶器）** | Kitchen（廚房） | 1959 | 37 字 | 雲端定時自動新增 ⭐ | [查看展品](kitchen-bottle-opener.html) |
-| **2026-11-08** | **Wooden Folding Ruler（木製摺疊尺）** | Desk（書桌） | 1970 | 34 字 | 雲端定時自動新增 ⭐ | [查看展品](desk-wooden-ruler.html) |
+| **2026-11-08** | **Cast Iron Bottle Opener（鑄鐵開瓶器）** | Kitchen（廚房） | 1959 | 37 字 | 既有新增紀錄（定時執行未證實） | [查看展品](kitchen-bottle-opener.html) |
+| **2026-11-08** | **Wooden Folding Ruler（木製摺疊尺）** | Desk（書桌） | 1970 | 34 字 | 既有新增紀錄（定時執行未證實） | [查看展品](desk-wooden-ruler.html) |
 | **2026-11-08** | **Forged Claw Hammer（鍛造羊角錘）** | Garage（車庫） | 1966 | 34 字 | 初始雲端上線測試 ⭐ | [查看展品](garage-claw-hammer.html) |
 | 2026-11-01 | Granite Mortar and Pestle（花崗岩研缽與研磨棒） | Kitchen（廚房） | 1971 | 35 字 | 既有館藏典藏 | [查看展品](kitchen-mortar-and-pestle.html) |
 | 2026-11-01 | Brass Paperclip（黃銅迴紋針） | Desk（書桌） | 1961 | 34 字 | 既有館藏典藏 | [查看展品](desk-brass-paperclip.html) |

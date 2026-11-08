@@ -1,0 +1,62 @@
+[
+  {
+    "filename": "garage-torpedo-level.html",
+    "room": "garage",
+    "room_name": "Garage",
+    "room_title_zh": "車庫",
+    "title": "Brass Spirit Torpedo Level",
+    "title_zh": "黃銅水準尺",
+    "year": "1962",
+    "catalog": "The Garage Room &bull; Catalog No. G-06",
+    "label": "<strong>Brass Spirit Torpedo Level</strong>. Acquired 1962. Its metal body carries the quiet weight of workshop service. Worn surfaces record patient hands.",
+    "fun_fact": "A bubble indicates level.",
+    "card_preview": "Machined from solid brass with glowing vials, registering true horizontal balance with silent mechanical authority.",
+    "word_count": "37 字",
+    "source": "Original Tiny Museum fictional collection; historical acquisition dates are fictional."
+  },
+  {
+    "filename": "kitchen-bottle-opener.html",
+    "room": "kitchen",
+    "room_name": "Kitchen",
+    "room_title_zh": "廚房",
+    "title": "Cast Iron Bottle Opener",
+    "title_zh": "鑄鐵開瓶器",
+    "year": "1959",
+    "catalog": "Kitchen Collection &bull; Catalog No. K-06",
+    "label": "<strong>Cast Iron Bottle Opener</strong>. Acquired 1959. Metal meets the hand with measured resistance. Repeated movement serves an ordinary ritual.",
+    "fun_fact": "A lever lifts the bottle cap.",
+    "card_preview": "Molded in unpolished iron, levering crown caps with crisp satisfaction across decades of celebratory gatherings.",
+    "word_count": "37 字",
+    "source": "Original Tiny Museum fictional collection; historical acquisition dates are fictional."
+  },
+  {
+    "filename": "garage-iron-c-clamp.html",
+    "room": "garage",
+    "room_name": "Garage",
+    "room_title_zh": "車庫",
+    "title": "Heavy Iron C-Clamp",
+    "title_zh": "重型鑄鐵C型夾",
+    "year": "1955",
+    "catalog": "The Garage Room &bull; Catalog No. G-07",
+    "label": "<strong>Heavy Iron C-Clamp</strong>. Acquired 1955. Its metal body carries the quiet weight of workshop service. Worn surfaces record patient hands.",
+    "fun_fact": "A screw converts rotation into clamping force.",
+    "card_preview": "Cast in ductile iron with an Acme threaded screw, holding glued timber with unswerving mechanical vigilance.",
+    "word_count": "34 字",
+    "source": "Original Tiny Museum fictional collection; historical acquisition dates are fictional."
+  },
+  {
+    "filename": "desk-rotary-pencil-sharpener.html",
+    "room": "desk",
+    "room_name": "Desk",
+    "room_title_zh": "書桌",
+    "title": "Mechanical Rotary Pencil Sharpener",
+    "title_zh": "旋轉手搖削鉛筆機",
+    "year": "1976",
+    "catalog": "Desk Collection &bull; Room 02",
+    "label": "<strong>Mechanical Rotary Pencil Sharpener</strong>. Acquired 1976. Metal meets the hand with measured resistance. Repeated movement serves an ordinary ritual.",
+    "fun_fact": "Rotating cutters shape the pencil point.",
+    "card_preview": "Twin cylindrical milling cutters shave cedar spirals with rhythmic grind, restoring precision points with disciplined efficiency.",
+    "word_count": "34 字",
+    "source": "Original Tiny Museum fictional collection; historical acquisition dates are fictional."
+  }
+]
