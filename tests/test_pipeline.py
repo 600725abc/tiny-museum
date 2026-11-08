@@ -146,6 +146,11 @@ class PipelineTests(unittest.TestCase):
         p.render()
         self.assertEqual(before, Path('garage.html').read_bytes())
         self.assertTrue(Path(self.item['filename']).exists())
+        homepage = Path('index.html').read_text(encoding='utf-8')
+        self.assertEqual(homepage.count('<article '), 1)
+        self.assertEqual(homepage.count('id="featured-exhibit"'), 1)
+        self.assertNotIn('desk-wooden-ruler.html', homepage)
+        self.assertTrue(Path('desk-wooden-ruler.html').exists())
         self.assertIsNone(p.read(p.STATE)['last_published_at'])
 
     def test_catalog_voice(self):

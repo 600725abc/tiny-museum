@@ -144,7 +144,7 @@ def run(target_room=None):
 
         img_daily_tag = f"""\n        <div class="exhibit-image">\n          <img src="{image_path}" alt="{selected['title']}" style="max-height: 380px; object-fit: cover; width: 100%;">\n        </div>""" if image_path else ""
 
-        new_plaque = f"""      <article class="museum-plaque" style="margin-bottom: 1rem;">
+        new_plaque = f"""      <article id="featured-exhibit" class="museum-plaque" style="margin-bottom: 1rem;">
         <header class="plaque-header">
           <span class="plaque-year">Acquired {selected['year']}</span>
           <h3 class="plaque-title" style="font-size: 1.8rem;"><a href="{selected['filename']}" style="color: inherit; text-decoration: none;">{selected['title']}</a></h3>
@@ -164,7 +164,7 @@ def run(target_room=None):
       </article>"""
 
         index_content, count = re.subn(
-            r'<article class="museum-plaque" style="margin-bottom: 1rem;">.*?</article>',
+            r'<article id="featured-exhibit" class="museum-plaque" style="margin-bottom: 1rem;">.*?</article>',
             new_plaque,
             index_content,
             flags=re.DOTALL
@@ -172,7 +172,7 @@ def run(target_room=None):
         if count != 1:
             raise ValueError("Homepage marker missing or duplicated")
         index_content = checked_sub(r'(?:Daily Feature|Latest Addition) &bull; [^<]+', f'Latest Addition &bull; {now_str}', index_content)
-        index_content = index_content.replace('Objects of the Day', 'Featured Objects')
+        index_content = index_content.replace('Objects of the Day', 'Featured Object')
         with open("index.html", "w", encoding="utf-8") as f:
             f.write(index_content)
 

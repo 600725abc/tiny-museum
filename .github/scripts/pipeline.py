@@ -102,7 +102,7 @@ def preflight(item):
         if Path(file).read_text(encoding='utf-8').count(marker) != 1:
             raise ValueError('Missing/duplicate marker: '+file)
     text = Path('index.html').read_text(encoding='utf-8')
-    if len(re.findall(r'<article class="museum-plaque" style="margin-bottom: 1rem;">.*?</article>', text, re.S)) != 1:
+    if len(re.findall(r'<article id="featured-exhibit" class="museum-plaque" style="margin-bottom: 1rem;">.*?</article>', text, re.S)) != 1:
         raise ValueError('Homepage marker missing/duplicate')
 
 def prepare():
