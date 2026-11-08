@@ -22,3 +22,5 @@
 | 2026-11-01 | Glass Paperweight（玻璃鎮紙） | Desk（書桌） | 1982 | 41 字 | 既有館藏典藏 | [查看展品](desk-glass-paperweight.html) |
 | 2026-11-01 | Brass Fountain Pen（黃銅鋼筆） | Desk（書桌） | 1974 | 46 字 | 既有館藏典藏 | [查看展品](desk-fountain-pen.html) |
 
+
+| 2026-11-08T06:12:09.201556+00:00 | Brass Spirit Torpedo Level | Garage | 1962 | 25 words | 部署後逐檔驗證通過 | [查看展品](garage-torpedo-level.html) |

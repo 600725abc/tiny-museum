@@ -1,38 +1,6 @@
 {
-  "last_published_at": null,
-  "pending": {
-    "item": {
-      "filename": "garage-torpedo-level.html",
-      "room": "garage",
-      "room_name": "Garage",
-      "room_title_zh": "車庫",
-      "title": "Brass Spirit Torpedo Level",
-      "title_zh": "黃銅水準尺",
-      "year": "1962",
-      "catalog": "The Garage Room &bull; Catalog No. G-06",
-      "label": "<strong>Brass Spirit Torpedo Level</strong>. Acquired 1962. Its metal body carries the quiet weight of workshop service. Worn surfaces record patient hands.",
-      "fun_fact": "A bubble indicates level.",
-      "card_preview": "Machined from solid brass with glowing vials, registering true horizontal balance with silent mechanical authority.",
-      "word_count": "25 words",
-      "source": "Original Tiny Museum fictional collection; historical acquisition dates are fictional."
-    },
-    "phase": "rendered",
-    "at": "2026-11-08T06:11:48.670835+00:00",
-    "run_id": "42453727958",
-    "usage": {
-      "input_tokens": 77,
-      "input_tokens_details": {
-        "image_tokens": 0,
-        "text_tokens": 77
-      },
-      "output_tokens": 824,
-      "output_tokens_details": {
-        "image_tokens": 824,
-        "text_tokens": 0
-      },
-      "total_tokens": 901
-    }
-  },
+  "last_published_at": "2026-11-08T06:12:09.201556+00:00",
+  "pending": null,
   "attempts": [
     {
       "at": "2026-11-08T06:11:48.670835+00:00",
@@ -40,6 +8,11 @@
       "filename": "garage-torpedo-level.html"
     }
   ],
-  "published": [],
+  "published": [
+    {
+      "filename": "garage-torpedo-level.html",
+      "at": "2026-11-08T06:12:09.201556+00:00"
+    }
+  ],
   "source_ids": []
 }
