@@ -1,9 +1,9 @@
-name: Daily Museum Exhibit Automation
+name: Museum Exhibit Automation (Every 3 Days)
 
 on:
   schedule:
-    # 01:00 UTC = 09:00 UTC+8 (台灣/台北時間 每天早上 9 點)
-    - cron: '0 1 * * *'
+    # 01:00 UTC = 09:00 UTC+8 (台灣/台北時間 每 3 天早上 9 點)
+    - cron: '0 1 */3 * *'
   workflow_dispatch: # 支援在 GitHub 介面或指令手動一鍵測試執行
 
 permissions:
@@ -32,6 +32,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes detected."
           else
-            git commit -m "Auto-curate: Daily exhibit update [skip ci]"
+            git commit -m "Auto-curate: Exhibit update (every 3 days) [skip ci]"
             git push
           fi

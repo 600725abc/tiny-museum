@@ -3,6 +3,8 @@
 *.tmp
 .DS_Store
 Thumbs.db
+__pycache__/
+*.pyc
 
 # Ignore heavy video production artifacts
 hyperagent/

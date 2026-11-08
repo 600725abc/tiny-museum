@@ -148,22 +148,22 @@ def run():
     with open(selected["filename"], "w", encoding="utf-8") as f:
         f.write(exhibit_html)
 
-    # 3. Update room gallery HTML
+    # 3. Update room gallery HTML (prepend to gallery-grid so newest items appear at the very front)
     room_file = f"{selected['room']}.html"
     if os.path.exists(room_file):
         with open(room_file, "r", encoding="utf-8") as f:
             room_content = f.read()
 
-        card_snippet = f"""
-      <a href="{selected['filename']}" class="object-card">
+        card_snippet = f"""      <a href="{selected['filename']}" class="object-card">
         <span class="card-year">Acquired {selected['year']}</span>
         <h3 class="card-title">{selected['title']}</h3>
         <p class="card-preview">{selected['card_preview']}</p>
         <span class="card-action">View Exhibit &rarr;</span>
-      </a>
-    </div>"""
+      </a>\n\n"""
 
-        room_content = room_content.replace("    </div>\n  </main>", f"{card_snippet}\n  </main>")
+        marker = '<div class="gallery-grid">\n'
+        if marker in room_content:
+            room_content = room_content.replace(marker, marker + card_snippet, 1)
         with open(room_file, "w", encoding="utf-8") as f:
             f.write(room_content)
 
@@ -199,7 +199,7 @@ def run():
         with open("index.html", "w", encoding="utf-8") as f:
             f.write(index_content)
 
-    # 5. Append to HISTORY.md
+    # 5. Append to HISTORY.md (newest at top)
     if os.path.exists("HISTORY.md"):
         with open("HISTORY.md", "r", encoding="utf-8") as f:
             hist_content = f.read()
@@ -212,6 +212,32 @@ def run():
             hist_content = parts[0] + "| :--- | :--- | :--- | :---: | :---: | :---: | :--- |\n" + new_row + parts[1]
             with open("HISTORY.md", "w", encoding="utf-8") as f:
                 f.write(hist_content)
+
+    # 6. Update dashboard.html (prepend newest item to table and update banner)
+    if os.path.exists("dashboard.html"):
+        with open("dashboard.html", "r", encoding="utf-8") as f:
+            dash_content = f.read()
+
+        new_row = f"""        <tr>
+          <td><span class="room-tag">{selected['room_title_zh']} {selected['room_name']}</span></td>
+          <td><strong>{selected['title']}</strong> ⭐</td>
+          <td>{selected['year']}</td>
+          <td><a href="{selected['filename']}" class="quick-open-btn">開啟展品 &rarr;</a></td>
+        </tr>\n"""
+
+        marker = "<tbody>\n"
+        if marker in dash_content:
+            dash_content = dash_content.replace(marker, marker + new_row, 1)
+
+        dash_content = re.sub(
+            r'<span class="plaque-year">最新自動入庫項目</span>\s*<h3.*?>.*?</h3>\s*<p.*?>.*?</p>\s*<a href=".*?" class="card-action">.*?</a>',
+            f'<span class="plaque-year">最新自動入庫項目</span>\n      <h3 style="font-family: var(--font-serif); font-size: 1.4rem; margin: 0.35rem 0;">{selected["title"]}（{selected["title_zh"]}）</h3>\n      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.75rem;">展廳：{selected["room_title_zh"]} ({selected["room_name"]}) &bull; 收購年份：{selected["year"]} &bull; 字數：{selected["word_count"]}</p>\n      <a href="{selected["filename"]}" class="card-action">點此直接查看展品頁面 &rarr;</a>',
+            dash_content,
+            flags=re.DOTALL
+        )
+
+        with open("dashboard.html", "w", encoding="utf-8") as f:
+            f.write(dash_content)
 
     print(f"Successfully added {selected['title']} and updated all pages.")
     return True
