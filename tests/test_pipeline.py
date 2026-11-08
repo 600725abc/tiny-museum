@@ -178,5 +178,42 @@ class PipelineTests(unittest.TestCase):
         self.assertFalse(Path('_site/automation').exists())
         self.assertFalse(Path('_site/.github').exists())
 
+    def test_complete_pipeline_with_mock_api_and_mock_deployment(self):
+        budget = p.read('automation/budget.json')
+        budget['approved'] = True
+        p.write('automation/budget.json', budget)
+        payload = p.json.dumps({'data': [{'b64_json': base64.b64encode(self.image()).decode()}], 'usage': {'output_tokens': 1}}).encode()
+        with patch.dict(os.environ, {'MUSEUM_PAID_ENABLED': 'true', 'GITHUB_RUN_ID': '123', 'GITHUB_RUN_ATTEMPT': '1', 'OPENAI_API_KEY': 'mock-not-a-key'}):
+            p.prepare()
+            with patch.object(p.urllib.request, 'urlopen', return_value=io.BytesIO(payload)) as call:
+                p.generate()
+                self.assertEqual(call.call_count, 1)
+        p.render()
+        p.build()
+        def deployed(url, **kwargs):
+            name = p.urllib.parse.urlparse(url).path.removeprefix('/museum/')
+            return io.BytesIO(Path('_site', name).read_bytes())
+        with patch.object(p.urllib.request, 'urlopen', side_effect=deployed):
+            p.verify('https://example.org/museum/')
+        p.finalize()
+        state = p.read(p.STATE)
+        self.assertIsNone(state['pending'])
+        self.assertEqual(len(state['published']), 1)
+        self.assertEqual(len(state['attempts']), 1)
+
+    def test_failed_online_verification_cannot_finalize(self):
+        self.pending('rendered')
+        p.build()
+        with patch.object(p.urllib.request, 'urlopen', side_effect=lambda *args, **kw: io.BytesIO(b'stale page')), patch.object(p.time, 'sleep'):
+            with self.assertRaisesRegex(RuntimeError, 'do not match'):
+                p.verify('https://example.org/')
+        self.assertIsNone(p.read(p.STATE)['last_published_at'])
+        self.assertFalse(Path('automation/verified.tmp').exists())
+
+    def test_source_exhaustion_fails_explicitly(self):
+        with patch.object(p, 'get_json', return_value={'objectIDs': []}):
+            with self.assertRaisesRegex(RuntimeError, 'No eligible'):
+                p.replenish({'published': [], 'source_ids': []})
+
 if __name__ == '__main__':
     unittest.main()

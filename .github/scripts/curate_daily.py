@@ -15,6 +15,12 @@ def generate_exhibit_image(title, prompt_desc, filename, room=""):
         image.verify()
     return path.as_posix()
 
+def checked_sub(pattern, replacement, content, flags=0):
+    updated, count = re.subn(pattern, replacement, content, flags=flags)
+    if count != 1:
+        raise ValueError("Expected one match for template pattern: " + pattern)
+    return updated
+
 def run(target_room=None):
     now_str = datetime.datetime.now().strftime("%Y-%m-%d")
     
@@ -165,24 +171,10 @@ def run(target_room=None):
         )
         if count != 1:
             raise ValueError("Homepage marker missing or duplicated")
-        index_content = re.sub(r'Daily Feature &bull; .*?今日入庫展品', f'Latest Addition &bull; {now_str}', index_content)
+        index_content = checked_sub(r'(?:Daily Feature|Latest Addition) &bull; [^<]+', f'Latest Addition &bull; {now_str}', index_content)
         index_content = index_content.replace('Objects of the Day', 'Featured Objects')
         with open("index.html", "w", encoding="utf-8") as f:
             f.write(index_content)
-
-    # History is written only by the verified deployment finalizer.
-    # 6. Append to HISTORY.md (newest at top)
-    if False:
-        with open("HISTORY.md", "r", encoding="utf-8") as f:
-            hist_content = f.read()
-
-        new_row = f"| **{now_str}** | **{selected['title']}（{selected['title_zh']}）** | {selected['room_name']}（{selected['room_title_zh']}） | {selected['year']} | {selected['word_count']} | 雲端定時自動新增 ⭐ | [查看展品]({selected['filename']}) |\n"
-        
-        parts = hist_content.split("| :--- | :--- | :--- | :---: | :---: | :---: | :--- |\n")
-        if len(parts) == 2:
-            hist_content = parts[0] + "| :--- | :--- | :--- | :---: | :---: | :---: | :--- |\n" + new_row + parts[1]
-            with open("HISTORY.md", "w", encoding="utf-8") as f:
-                f.write(hist_content)
 
     # 7. Update dashboard.html (prepend newest item to table and update banner)
     if os.path.exists("dashboard.html"):
@@ -202,7 +194,7 @@ def run(target_room=None):
         if marker in dash_content:
             dash_content = dash_content.replace(marker, marker + new_row, 1)
 
-        dash_content = re.sub(
+        dash_content = checked_sub(
             r'<span class="plaque-year">最新自動入庫項目</span>\s*<h3.*?>.*?</h3>\s*<p.*?>.*?</p>\s*<a href=".*?" class="card-action">.*?</a>',
             f'<span class="plaque-year">最新自動入庫項目</span>\n      <h3 style="font-family: var(--font-serif); font-size: 1.4rem; margin: 0.35rem 0;">{selected["title"]}（{selected["title_zh"]}）</h3>\n      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.75rem;">展廳：{selected["room_title_zh"]} ({selected["room_name"]}) &bull; 收購年份：{selected["year"]} &bull; 字數：{selected["word_count"]}</p>\n      <a href="{selected["filename"]}" class="card-action">點此直接查看展品頁面 &rarr;</a>',
             dash_content,
@@ -214,12 +206,12 @@ def run(target_room=None):
         kitchen_count = len([f for f in os.listdir(".") if f.startswith("kitchen-") and f.endswith(".html")])
         desk_count = len([f for f in os.listdir(".") if f.startswith("desk-") and f.endswith(".html")])
         garage_count = len([f for f in os.listdir(".") if f.startswith("garage-") and f.endswith(".html")])
-        dash_content = re.sub(
+        dash_content = checked_sub(
             r'<div class="stat-number">\d+</div>\s*<div class="stat-label">現有展品總數</div>',
             f'<div class="stat-number">{total_exhibits}</div>\n        <div class="stat-label">現有展品總數</div>',
             dash_content
         )
-        dash_content = re.sub(
+        dash_content = checked_sub(
             r'<div class="stat-number">\d+ / \d+ / \d+</div>\s*<div class="stat-label">廚房 / 書桌 / 車庫</div>',
             f'<div class="stat-number">{kitchen_count} / {desk_count} / {garage_count}</div>\n        <div class="stat-label">廚房 / 書桌 / 車庫</div>',
             dash_content
