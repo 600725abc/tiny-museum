@@ -61,8 +61,8 @@ POOL = [
     }
 ]
 
-def generate_exhibit_image(title, prompt_desc, filename):
-    """Call OpenAI API using GPT Image 2.6 to generate and save exhibit artwork."""
+def generate_exhibit_image(title, prompt_desc, filename, room=""):
+    """Call OpenAI API using gpt-image-2.6-flare to generate high-end domestic setting artwork."""
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
         print("OPENAI_API_KEY not configured. Skipping automated image generation.")
@@ -79,11 +79,20 @@ def generate_exhibit_image(title, prompt_desc, filename):
     
     # Designated model: gpt-image-2.6-flare
     model_name = os.environ.get("OPENAI_IMAGE_MODEL", "gpt-image-2.6-flare")
+    
+    furniture_context = {
+        "kitchen": "a warm solid butcher block kitchen island or honed soapstone counter",
+        "desk": "a handsome dark oiled walnut study desk with book spines and quiet stationery",
+        "garage": "a scarred but cherished solid maple carpenter workbench in a sunlit home workshop"
+    }.get(room.lower(), "sophisticated, textured solid hardwood home furniture")
+
     prompt = (
-        f"Fine art museum archival photograph of {title}, an everyday object elevated as a sculptural artifact. "
-        f"{prompt_desc}. Elegantly displayed within a sophisticated, richly textured home furniture interior—"
-        f"resting on warm oiled solid oak or polished dark walnut furniture, warm architectural directional lighting, "
-        f"tactile materials, quiet reverence, artistic flair, editorial fine art still life."
+        f"An editorial still-life photograph of {title}, an everyday household object celebrated for its sculptural quality and honest utility. "
+        f"{prompt_desc}. "
+        f"Setting: Intimate, high-end residential home environment—naturally placed on {furniture_context}. "
+        f"Strictly not an art gallery, no museum plinths, no sterile pedestals. "
+        f"Atmosphere: Rich, tasteful home interior with tactile domestic textures, warm natural daylight streaming through a nearby residential window, "
+        f"subtle soft morning illumination highlighting the patina of daily life. Architectural Digest domestic aesthetic."
     )
     
     payload = {
