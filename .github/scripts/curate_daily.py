@@ -4,20 +4,6 @@ import datetime
 
 POOL = [
     {
-        "filename": "desk-wooden-ruler.html",
-        "room": "desk",
-        "room_name": "Desk",
-        "room_title_zh": "書桌",
-        "title": "Wooden Folding Ruler",
-        "title_zh": "木製摺疊尺",
-        "year": "1970",
-        "catalog": "Desk Collection &bull; Room 02",
-        "label": "<strong>Wooden Folding Ruler</strong>. Acquired 1970. Bound by brass hinges and seasoned boxwood, it unfolds six feet of tactile measurement. Its incised increments keep steady geometric faith against shifting human ambition.",
-        "fun_fact": "Anton Ullrich patented the spring-joint folding ruler in 1886.",
-        "card_preview": "Bound by brass hinges and seasoned boxwood, it unfolds six feet of tactile measurement with steady geometric faith.",
-        "word_count": "34 字"
-    },
-    {
         "filename": "garage-torpedo-level.html",
         "room": "garage",
         "room_name": "Garage",
@@ -75,6 +61,56 @@ POOL = [
     }
 ]
 
+def generate_exhibit_image(title, prompt_desc, filename):
+    """Call OpenAI API using GPT Image 2.6 to generate and save exhibit artwork."""
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        print("OPENAI_API_KEY not configured. Skipping automated image generation.")
+        return None
+
+    os.makedirs("images", exist_ok=True)
+    img_filename = f"images/{filename.replace('.html', '.jpg')}"
+    
+    endpoint = "https://api.openai.com/v1/images/generations"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    # Designated model: GPT Image 2.6
+    model_name = os.environ.get("OPENAI_IMAGE_MODEL", "gpt-image-2.6")
+    prompt = f"Museum archival photograph of {title}. {prompt_desc}. Quiet institutional aesthetic, clean archival background, soft natural lighting."
+    
+    payload = {
+        "model": model_name,
+        "prompt": prompt,
+        "n": 1,
+        "size": "1024x1024"
+    }
+
+    try:
+        import urllib.request
+        import json
+        
+        req = urllib.request.Request(
+            endpoint,
+            data=json.dumps(payload).encode("utf-8"),
+            headers=headers,
+            method="POST"
+        )
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            img_url = data["data"][0]["url"]
+            
+            with urllib.request.urlopen(img_url, timeout=30) as img_resp:
+                with open(img_filename, "wb") as f_img:
+                    f_img.write(img_resp.read())
+            print(f"Successfully generated exhibit image via {model_name}: {img_filename}")
+            return img_filename
+    except Exception as e:
+        print(f"Notice: Image generation with {model_name} encountered: {e}")
+        return None
+
 def run():
     now_str = datetime.datetime.now().strftime("%Y-%m-%d")
     
@@ -91,7 +127,11 @@ def run():
 
     print(f"Adding new exhibit: {selected['title']}")
 
-    # 2. Create the exhibit HTML file
+    # 2. Generate Image with GPT Image 2.6 (if API key is present)
+    image_path = generate_exhibit_image(selected['title'], selected['card_preview'], selected['filename'])
+    image_tag = f"""\n        <div class="exhibit-image">\n          <img src="{image_path}" alt="{selected['title']}">\n        </div>""" if image_path else ""
+
+    # 3. Create the exhibit HTML file
     kitchen_active = ' class="active"' if selected['room'] == 'kitchen' else ''
     desk_active = ' class="active"' if selected['room'] == 'desk' else ''
     garage_active = ' class="active"' if selected['room'] == 'garage' else ''
@@ -123,7 +163,7 @@ def run():
           <span class="plaque-year">Acquired {selected['year']}</span>
           <h1 class="plaque-title">{selected['title']}</h1>
           <p class="plaque-room">{selected['catalog']}</p>
-        </header>
+        </header>{image_tag}
 
         <div class="museum-label">
           <p>{selected['label']}</p>
@@ -148,7 +188,7 @@ def run():
     with open(selected["filename"], "w", encoding="utf-8") as f:
         f.write(exhibit_html)
 
-    # 3. Update room gallery HTML (prepend to gallery-grid so newest items appear at the very front)
+    # 4. Update room gallery HTML (prepend to gallery-grid so newest items appear at the very front)
     room_file = f"{selected['room']}.html"
     if os.path.exists(room_file):
         with open(room_file, "r", encoding="utf-8") as f:
@@ -167,17 +207,19 @@ def run():
         with open(room_file, "w", encoding="utf-8") as f:
             f.write(room_content)
 
-    # 4. Update index.html Object of the Day
+    # 5. Update index.html Object of the Day
     if os.path.exists("index.html"):
         with open("index.html", "r", encoding="utf-8") as f:
             index_content = f.read()
+
+        img_daily_tag = f"""\n        <div class="exhibit-image">\n          <img src="{image_path}" alt="{selected['title']}" style="max-height: 380px; object-fit: cover; width: 100%;">\n        </div>""" if image_path else ""
 
         new_plaque = f"""      <article class="museum-plaque" style="margin-bottom: 1rem;">
         <header class="plaque-header">
           <span class="plaque-year">Acquired {selected['year']}</span>
           <h3 class="plaque-title" style="font-size: 1.8rem;"><a href="{selected['filename']}" style="color: inherit; text-decoration: none;">{selected['title']}</a></h3>
           <p class="plaque-room">{selected['catalog']}</p>
-        </header>
+        </header>{img_daily_tag}
         <div class="museum-label">
           <p>{selected['label']}</p>
         </div>
@@ -199,21 +241,20 @@ def run():
         with open("index.html", "w", encoding="utf-8") as f:
             f.write(index_content)
 
-    # 5. Append to HISTORY.md (newest at top)
+    # 6. Append to HISTORY.md (newest at top)
     if os.path.exists("HISTORY.md"):
         with open("HISTORY.md", "r", encoding="utf-8") as f:
             hist_content = f.read()
 
         new_row = f"| **{now_str}** | **{selected['title']}（{selected['title_zh']}）** | {selected['room_name']}（{selected['room_title_zh']}） | {selected['year']} | {selected['word_count']} | 雲端定時自動新增 ⭐ | [查看展品]({selected['filename']}) |\n"
         
-        # Insert right after table header
         parts = hist_content.split("| :--- | :--- | :--- | :---: | :---: | :---: | :--- |\n")
         if len(parts) == 2:
             hist_content = parts[0] + "| :--- | :--- | :--- | :---: | :---: | :---: | :--- |\n" + new_row + parts[1]
             with open("HISTORY.md", "w", encoding="utf-8") as f:
                 f.write(hist_content)
 
-    # 6. Update dashboard.html (prepend newest item to table and update banner)
+    # 7. Update dashboard.html (prepend newest item to table and update banner)
     if os.path.exists("dashboard.html"):
         with open("dashboard.html", "r", encoding="utf-8") as f:
             dash_content = f.read()
