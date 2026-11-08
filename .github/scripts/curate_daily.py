@@ -77,8 +77,8 @@ def generate_exhibit_image(title, prompt_desc, filename):
         "Content-Type": "application/json"
     }
     
-    # Designated model: flare
-    model_name = os.environ.get("OPENAI_IMAGE_MODEL", "flare")
+    # Designated model: gpt-image-2.6-flare
+    model_name = os.environ.get("OPENAI_IMAGE_MODEL", "gpt-image-2.6-flare")
     prompt = (
         f"Fine art museum archival photograph of {title}, an everyday object elevated as a sculptural artifact. "
         f"{prompt_desc}. Elegantly displayed within a sophisticated, richly textured home furniture interior—"

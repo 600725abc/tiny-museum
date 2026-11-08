@@ -24,7 +24,7 @@ jobs:
       - name: Curate New Exhibit
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_IMAGE_MODEL: flare
+          OPENAI_IMAGE_MODEL: gpt-image-2.6-flare
         run: python .github/scripts/curate_daily.py
 
       - name: Commit & Push Changes
