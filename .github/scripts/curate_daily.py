@@ -79,7 +79,12 @@ def generate_exhibit_image(title, prompt_desc, filename):
     
     # Designated model: GPT Image 2.6
     model_name = os.environ.get("OPENAI_IMAGE_MODEL", "gpt-image-2.6")
-    prompt = f"Museum archival photograph of {title}. {prompt_desc}. Quiet institutional aesthetic, clean archival background, soft natural lighting."
+    prompt = (
+        f"Fine art museum archival photograph of {title}, an everyday object elevated as a sculptural artifact. "
+        f"{prompt_desc}. Elegantly displayed within a sophisticated, richly textured home furniture interior—"
+        f"resting on warm oiled solid oak or polished dark walnut furniture, warm architectural directional lighting, "
+        f"tactile materials, quiet reverence, artistic flair, editorial fine art still life."
+    )
     
     payload = {
         "model": model_name,
