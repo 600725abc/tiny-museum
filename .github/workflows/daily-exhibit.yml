@@ -72,7 +72,9 @@ jobs:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
         run: python .github/scripts/pipeline.py verify "$PAGE_URL"
       - name: Record verified publication
-        run: python .github/scripts/pipeline.py finalize
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: python .github/scripts/pipeline.py finalize "$PAGE_URL"
       - name: Persist success clock
         run: bash .github/scripts/commit.sh
       - name: Failure notification

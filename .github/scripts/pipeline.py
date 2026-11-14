@@ -239,7 +239,57 @@ def verify(base):
     Path('automation/verified.tmp').write_text(hashlib.sha256(Path('_site/deployment.json').read_bytes()).hexdigest())
     print('All deployed pages, stylesheet and images match local bytes.')
 
-def finalize():
+def format_delivery_summary(item, base_url=None):
+    base = (base_url or os.getenv('PAGE_URL') or 'https://600725abc.github.io/tiny-museum/').rstrip('/') + '/'
+    room = item['room']
+    room_url = f"{base}{room}.html"
+    exhibit_url = f"{base}{item['filename']}"
+    home_url = base
+    dashboard_url = f"{base}dashboard.html"
+
+    clean_label = re.sub(r'<[^>]+>', '', item['label']).strip()
+    clean_fact = re.sub(r'<[^>]+>', '', item['fun_fact']).strip()
+
+    title_display = item['title'] + (f"（{item['title_zh']}）" if item.get('title_zh') else '')
+    room_display = f"{item['room_name']}（{ROOMS.get(room, room)}）"
+
+    lines = [
+        "## 🏛️ Tiny Museum 展品發布交付報告 (Delivery Summary)",
+        "",
+        "### 交付方式與公開線上連結 (Public URLs)",
+        f"- **館藏首頁 (Home)**: [{home_url}]({home_url})",
+        f"- **本次新增展品 (New Exhibit)**: [{item['title']}]({exhibit_url})",
+        f"- **所屬展廳 (Room Gallery)**: [{room_display}]({room_url})",
+        f"- **展館儀表板 (Dashboard)**: [{dashboard_url}]({dashboard_url})",
+        "",
+        "### 交付展品詳細元數據 (Exhibit Metadata)",
+        f"- **展件名稱**: {title_display}",
+        f"- **所屬展廳**: {room_display}",
+        f"- **典藏年份**: Acquired {item['year']}",
+        f"- **展籤字數**: {words(item)} words (嚴格上限 40 字)",
+        f"- **展籤內文**: {clean_label}",
+        f"- **館長趣聞**: {clean_fact}",
+        "",
+        "### 驗收狀態 (Verification)",
+        "- **逐檔校驗**: 線上所有公開檔案（HTML、CSS、圖片）SHA-256 核對一致",
+        "- **發布狀態**: 已完成部署並通過線上逐檔驗證"
+    ]
+    return "\n".join(lines)
+
+def emit_delivery_summary(item, base_url=None):
+    summary = format_delivery_summary(item, base_url)
+    print(summary)
+
+    step_summary_path = os.getenv('GITHUB_STEP_SUMMARY')
+    if step_summary_path:
+        try:
+            with open(step_summary_path, 'a', encoding='utf-8') as f:
+                f.write(summary + '\n')
+        except Exception as e:
+            print(f"Warning: Failed to write GITHUB_STEP_SUMMARY: {e}", file=sys.stderr)
+    return summary
+
+def finalize(base_url=None):
     expected = hashlib.sha256(Path('_site/deployment.json').read_bytes()).hexdigest()
     if Path('automation/verified.tmp').read_text() != expected:
         raise RuntimeError('Online verification missing')
@@ -251,16 +301,43 @@ def finalize():
         raise RuntimeError('Exhibit not rendered')
     stamp, item = now().isoformat(), pending['item']
     state['last_published_at'] = stamp
-    state['published'].append({'filename': item['filename'], 'at': stamp})
+    state['published'].append({'filename': item['filename'], 'at': stamp, 'title': item['title'], 'room': item['room']})
     if item.get('source_id'):
         state['source_ids'].append(item['source_id'])
     state['pending'] = None
     path = Path('HISTORY.md')
     path.write_text(path.read_text(encoding='utf-8')+f'\n| {stamp} | {item["title"]} | {item["room_name"]} | {item["year"]} | {words(item)} words | 部署後逐檔驗證通過 | [查看展品]({item["filename"]}) |\n', encoding='utf-8')
     write(STATE, state)
+    emit_delivery_summary(item, base_url)
+
+def summary_cmd(base_url=None):
+    state = read(STATE)
+    published = state.get('published') or []
+    if not published:
+        print("No published exhibits found in state.")
+        return
+    latest_filename = published[-1]['filename']
+    catalog = read('automation/catalog.json')
+    item = next((i for i in catalog if i['filename'] == latest_filename), None)
+    if not item:
+        # Fallback to reconstructing basic item
+        item = {
+            'filename': latest_filename,
+            'room': latest_filename.split('-')[0],
+            'room_name': latest_filename.split('-')[0].title(),
+            'title': published[-1].get('title', latest_filename),
+            'year': 'N/A',
+            'label': published[-1].get('title', latest_filename),
+            'fun_fact': 'Recorded in museum history.',
+        }
+    emit_delivery_summary(item, base_url)
 
 if __name__ == '__main__':
     if sys.argv[1] == 'verify':
         verify(sys.argv[2])
+    elif sys.argv[1] == 'finalize':
+        finalize(sys.argv[2] if len(sys.argv) > 2 else None)
+    elif sys.argv[1] == 'summary':
+        summary_cmd(sys.argv[2] if len(sys.argv) > 2 else None)
     else:
-        {'prepare': prepare, 'generate': generate, 'render': render, 'build': build, 'finalize': finalize}[sys.argv[1]]()
+        {'prepare': prepare, 'generate': generate, 'render': render, 'build': build}[sys.argv[1]]()
