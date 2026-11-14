@@ -16,9 +16,22 @@
       "word_count": "27 words",
       "source": "Original Tiny Museum fictional collection; historical acquisition dates are fictional."
     },
-    "phase": "reserved",
+    "phase": "image_ready",
     "at": "2026-11-14T03:22:33.761003+00:00",
-    "run_id": "43551291611"
+    "run_id": "43551291611",
+    "usage": {
+      "input_tokens": 80,
+      "input_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 80
+      },
+      "output_tokens": 824,
+      "output_tokens_details": {
+        "image_tokens": 824,
+        "text_tokens": 0
+      },
+      "total_tokens": 904
+    }
   },
   "attempts": [
     {
