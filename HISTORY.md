@@ -24,3 +24,5 @@
 
 
 | 2026-11-08T06:12:09.201556+00:00 | Brass Spirit Torpedo Level | Garage | 1962 | 25 words | 部署後逐檔驗證通過 | [查看展品](garage-torpedo-level.html) |
+
+| 2026-11-14T03:22:57.512829+00:00 | Heavy Iron C-Clamp | Garage | 1955 | 27 words | 部署後逐檔驗證通過 | [查看展品](garage-iron-c-clamp.html) |

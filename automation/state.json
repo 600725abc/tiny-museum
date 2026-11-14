@@ -1,38 +1,6 @@
 {
-  "last_published_at": "2026-11-08T06:12:09.201556+00:00",
-  "pending": {
-    "item": {
-      "filename": "garage-iron-c-clamp.html",
-      "room": "garage",
-      "room_name": "Garage",
-      "room_title_zh": "車庫",
-      "title": "Heavy Iron C-Clamp",
-      "title_zh": "重型鑄鐵C型夾",
-      "year": "1955",
-      "catalog": "The Garage Room &bull; Catalog No. G-07",
-      "label": "<strong>Heavy Iron C-Clamp</strong>. Acquired 1955. Its metal body carries the quiet weight of workshop service. Worn surfaces record patient hands.",
-      "fun_fact": "A screw converts rotation into clamping force.",
-      "card_preview": "Cast in ductile iron with an Acme threaded screw, holding glued timber with unswerving mechanical vigilance.",
-      "word_count": "27 words",
-      "source": "Original Tiny Museum fictional collection; historical acquisition dates are fictional."
-    },
-    "phase": "rendered",
-    "at": "2026-11-14T03:22:33.761003+00:00",
-    "run_id": "43551291611",
-    "usage": {
-      "input_tokens": 80,
-      "input_tokens_details": {
-        "image_tokens": 0,
-        "text_tokens": 80
-      },
-      "output_tokens": 824,
-      "output_tokens_details": {
-        "image_tokens": 824,
-        "text_tokens": 0
-      },
-      "total_tokens": 904
-    }
-  },
+  "last_published_at": "2026-11-14T03:22:57.512829+00:00",
+  "pending": null,
   "attempts": [
     {
       "at": "2026-11-08T06:11:48.670835+00:00",
@@ -49,6 +17,10 @@
     {
       "filename": "garage-torpedo-level.html",
       "at": "2026-11-08T06:12:09.201556+00:00"
+    },
+    {
+      "filename": "garage-iron-c-clamp.html",
+      "at": "2026-11-14T03:22:57.512829+00:00"
     }
   ],
   "source_ids": []
